@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bir Marul Hikayesi 🥬 – Gala Gecesi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#05040a" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg: #05040a;
+      --red: #b02030;
+      --ticket-bg: #fbf6ec;
+      --ticket-border: #e4dbcf;
+      --ticket-text: #22202a;
+      --ticket-soft: #6c6674;
+      --cc-bg: rgba(7, 5, 14, 0.88);
+      --cc-accent: #f5b36b;
+      --cc-accent-soft: #f07171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle at top, #302744 0, #120f20 55%, #040208 100%);
+      overflow: hidden;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      color: #f5f1ff;
+    }
+
+    @supports (height: 100dvh) {
+      body {
+        height: 100dvh;
+      }
+    }
+
+    .bg-glow {
+      position: fixed;
+      inset: -20%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(255, 240, 210, 0.38), transparent 60%),
+        radial-gradient(circle at 85% 0%, rgba(230, 200, 255, 0.4), transparent 60%),
+        radial-gradient(circle at 50% 100%, rgba(255, 150, 150, 0.45), transparent 55%);
+      z-index: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    body.lights-dim .bg-glow {
+      opacity: 0.06;
+    }
+
+    .cinema {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .screen-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at top, #4b2b3a 0, #191727 55%);
+      box-shadow:
+        0 0 40px rgba(0, 0, 0, 0.9),
+        0 0 80px rgba(0, 0, 0, 0.95);
+    }
+
+    .screen-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(0,0,0,0.5) 0, rgba(0,0,0,0.85) 55%, rgba(0,0,0,0.95) 100%);
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    body.lights-dim .screen-wrapper::before {
+      opacity: 1;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      padding: min(3vw, 26px);
+      padding-bottom: 160px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+      .screen {
+        padding: 14px;
+        padding-bottom: 120px;
+        align-items: flex-end;
+      }
+    }
+
+    .screen-inner {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      aspect-ratio: 16 / 9;
+      border-radius: 22px;
+      background: #000;
+      overflow: hidden;
+      box-shadow:
+        0 24px 45px rgba(0, 0, 0, 0.95),
+        0 0 60px rgba(0, 0, 0, 0.9);
+      z-index: 1;
+    }
+
+    .screen-inner::after {
+      content: "";
+      position: absolute;
+      inset: -6%;
+      pointer-events: none;
+      box-shadow:
+        0 0 0 120px rgba(0, 0, 0, 0.32),
+        0 0 80px rgba(0, 0, 0, 0.9);
+      opacity: 0.35;
+      transition: opacity 0.8s ease;
+    }
+
+    body.lights-dim .screen-inner::after {
+      opacity: 0.82;
+    }
+
+    @media (max-width: 768px) {
+      .screen-inner {
+        border-radius: 18px;
+      }
+    }
+
+    .screen-video {
+      position: absolute;
+      inset: 0;
+      background: #000; /* poster işini artık video üstleniyor */
+      border-radius: inherit;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .screen-video video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background-color: transparent;
+    }
+
+    /* ========= ÜSTTE FİLMİ BAŞLAT BUTONU ========= */
+
+    .top-start {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .top-start.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .top-start-btn {
+      border: none;
+      outline: none;
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      background: linear-gradient(135deg, #f07171, #f5b36b);
+      color: #190b0b;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .top-start-btn span.icon {
+      font-size: 1rem;
+    }
+
+    .top-start-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.75);
+    }
+
+    .top-start-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.7);
+    }
+
+    /* ========= CUSTOM PLAYER ========= */
+
+    .custom-controls {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(7,5,14,0.96), rgba(22,15,32,0.96));
+      border: 1px solid rgba(255, 245, 230, 0.18);
+      box-shadow:
+        0 14px 32px rgba(0,0,0,0.75),
+        0 0 0 1px rgba(255,255,255,0.02);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #f7f2ff;
+      font-size: 0.78rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      transform: translateY(6px);
+      z-index: 6; /* overlay'den yukarıda */
+    }
+
+    .custom-controls.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .cc-btn {
+      border: none;
+      outline: none;
+      background: none;
+      color: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 4px 7px;
+      font-size: 0.9rem;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .cc-btn:hover {
+      background: rgba(255,255,255,0.06);
+      transform: translateY(-0.5px);
+    }
+
+    .cc-btn:active {
+      transform: translateY(0.5px);
+    }
+
+    .cc-icon {
+      display: block;
+      line-height: 1;
+    }
+
+    .cc-progress-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .cc-progress-bg {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .cc-progress-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cc-accent), var(--cc-accent-soft));
+      box-shadow: 0 0 6px rgba(245,179,107,0.8);
+      transition: width 0.05s linear;
+    }
+
+    .cc-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: fit-content;
+    }
+
+    .cc-time {
+      font-size: 0.72rem;
+      color: rgba(245, 239, 255, 0.86);
+      white-space: nowrap;
+    }
+
+    .cc-big-play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .cc-big-play-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 999px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      background: radial-gradient(circle at 30% 20%, #fffbe7, #f5b36b);
+      box-shadow:
+        0 20px 40px rgba(0,0,0,0.85),
+        0 0 0 1px rgba(255,255,255,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.2s ease;
+    }
+
+    .cc-big-play-btn:hover {
+      transform: scale(1.06) translateY(-1px);
+      box-shadow:
+        0 26px 55px rgba(0,0,0,0.9),
+        0 0 0 1px rgba(255,255,255,0.45);
+    }
+
+    .cc-big-play-btn:active {
+      transform: scale(0.97);
+      box-shadow:
+        0 14px 26px rgba(0,0,0,0.85),
+        0 0 0 1px rgba(255,255,255,0.3);
+    }
+
+    .cc-big-play-btn span {
+      margin-left: 3px;
+      font-size: 1.8rem;
+      color: #271010;
+    }
+
+    .cc-big-play.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .viewer-scene {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1100px, 100vw);
+      z-index: 2;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .viewer-scene img {
+      width: 100%;
+      height: auto;
+      display: block;
+      image-rendering: pixelated;
+      filter: brightness(1.08) contrast(1.02);
+      transition: filter 0.8s ease;
+    }
+
+    body.lights-dim .viewer-scene img {
+      filter: brightness(0.48) contrast(1.18);
+    }
+
+    /* ===== REKLAM ARASI & FİNAL EKRANI ===== */
+
+    .pause-overlay,
+    .end-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 50% 0, rgba(0,0,0,0.55), rgba(0,0,0,0.9));
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      z-index: 4;
+    }
+
+    .pause-overlay.show,
+    .end-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .pause-card,
+    .end-card {
+      background: rgba(10, 8, 18, 0.92);
+      border-radius: 18px;
+      padding: 18px 22px;
+      border: 1px solid rgba(255, 245, 230, 0.15);
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 255, 255, 0.03);
+      max-width: 320px;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+    }
+
+    .pause-title {
+      font-size: 1rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #f5e2c8;
+      margin-bottom: 8px;
+    }
+
+    .pause-text {
+      font-size: 0.86rem;
+      color: #d9d3f5;
+      line-height: 1.6;
+    }
+
+    .end-title {
+      font-size: 1.05rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #ffe4c4;
+      margin-bottom: 10px;
+    }
+
+    .end-text {
+      font-size: 0.88rem;
+      color: #e3defa;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+
+    .end-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .end-btn {
+      border: none;
+      outline: none;
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
+      font-family: inherit;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .end-btn.primary {
+      background: linear-gradient(135deg, #f07171, #f5b36b);
+      color: #140b0b;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55);
+    }
+
+    .end-btn.ghost {
+      background: transparent;
+      color: #f3e8ff;
+      border: 1px solid rgba(243, 232, 255, 0.5);
+    }
+
+    .end-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
+    }
+
+    .end-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6);
+    }
+
+    /* ===== PERDE ===== */
+
+    .curtain {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .curtain-panel {
+      flex: 1;
+      height: 100%;
+      background:
+        radial-gradient(circle at 50% -40%, rgba(255,255,255,0.18), transparent 60%),
+        repeating-linear-gradient(
+          90deg,
+          #8f0b1b,
+          #8f0b1b 14px,
+          #c52134 14px,
+          #c52134 28px
+        );
+      background-repeat: no-repeat, repeat;
+      background-size: 160% 140%, 40px 100%;
+      background-position: center 0, 0 0;
+      box-shadow:
+        inset 0 0 45px rgba(0, 0, 0, 0.9),
+        0 0 55px rgba(0, 0, 0, 0.95);
+      will-change: transform, background-position;
+      transition: transform 1.25s cubic-bezier(0.16, 0.84, 0.3, 1);
+    }
+
+    @keyframes curtainWave {
+      0%   { background-position: center 0, 0 0; }
+      50%  { background-position: center 10px, -20px 0; }
+      100% { background-position: center -6px, 10px 0; }
+    }
+
+    .curtain-panel.left {
+      animation: curtainWave 11s ease-in-out infinite alternate;
+      box-shadow:
+        inset 45px 0 60px rgba(0,0,0,0.85),
+        0 0 55px rgba(0, 0, 0, 0.95);
+    }
+
+    .curtain-panel.right {
+      animation: curtainWave 11s ease-in-out infinite alternate-reverse;
+      box-shadow:
+        inset -45px 0 60px rgba(0,0,0,0.85),
+        0 0 55px rgba(0, 0, 0, 0.95);
+    }
+
+    .curtain.open .curtain-panel.left {
+      transform: translateX(-101%);
+    }
+    .curtain.open .curtain-panel.right {
+      transform: translateX(101%);
+    }
+
+    /* ===== BİLET ===== */
+
+    .ticket-layer {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-inline: 10px;
+      z-index: 5;
+      pointer-events: auto;
+    }
+
+    .ticket-visual {
+      position: relative;
+      width: min(760px, 96vw);
+      max-width: 760px;
+      display: flex;
+      align-items: stretch;
+      background: transparent;
+      filter:
+        drop-shadow(0 26px 55px rgba(0, 0, 0, 0.95))
+        drop-shadow(0 0 30px rgba(0, 0, 0, 0.9));
+      will-change: transform;
+    }
+
+    .ticket-visual::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      bottom: 10px;
+      left: calc(100% * 1.3 / (1.3 + 0.55));
+      border-left: 1px dashed #ccbfae;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      .ticket-visual {
+        width: 94vw;
+      }
+    }
+
+    .ticket-main-part,
+    .ticket-stub {
+      background: var(--ticket-bg);
+      color: var(--ticket-text);
+      border-radius: 18px;
+      border: 1px solid var(--ticket-border);
+      position: relative;
+    }
+
+    .ticket-main-part::before,
+    .ticket-main-part::after,
+    .ticket-stub::before,
+    .ticket-stub::after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 100%;
+      top: 0;
+      background-image: radial-gradient(circle, #e4dbcf 3px, transparent 3px);
+      background-size: 10px 18px;
+      background-repeat: repeat-y;
+      opacity: 0.9;
+    }
+
+    .ticket-main-part::before {
+      left: -6px;
+    }
+
+    .ticket-main-part::after {
+      right: -6px;
+      opacity: 0.3;
+    }
+
+    .ticket-stub::before {
+      left: -6px;
+      opacity: 0.3;
+    }
+
+    .ticket-stub::after {
+      display: none;
+    }
+
+    .ticket-main-part {
+      flex: 1.3;
+      padding: 22px 26px 20px;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: none;
+      overflow: hidden;
+    }
+
+    .ticket-stub-wrap {
+      position: relative;
+      flex: 0.55;
+      display: flex;
+      align-items: stretch;
+      will-change: transform;
+    }
+
+    .ticket-stub {
+      width: 100%;
+      padding: 18px 18px 22px;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+    }
+
+    .ticket-main-tilt {
+      transition: transform 0.12s linear;
+      will-change: transform;
+    }
+
+    .ticket-label-small {
+      font-size: 0.64rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ticket-soft);
+      margin-bottom: 4px;
+    }
+
+    .ticket-title {
+      font-family: "Dancing Script", cursive;
+      font-size: 1.8rem;
+      line-height: 1.1;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ticket-title span.leaf {
+      font-size: 1.4rem;
+    }
+
+    .ticket-subtitle {
+      font-size: 0.86rem;
+      color: var(--ticket-soft);
+      margin-bottom: 12px;
+    }
+
+    .ticket-divider {
+      border: none;
+      border-top: 1px solid #d5c8b6;
+      margin: 8px 0 12px;
+    }
+
+    .ticket-description {
+      font-size: 0.84rem;
+      line-height: 1.6;
+      color: var(--ticket-soft);
+      margin-bottom: 12px;
+    }
+
+    .ticket-rows {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 10px;
+      font-size: 0.86rem;
+      text-align: center;
+    }
+
+    .ticket-rows > div {
+      min-width: 120px;
+    }
+
+    .ticket-row-label {
+      font-weight: 600;
+      color: var(--ticket-text);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+    }
+
+    .ticket-row-value {
+      margin-top: 4px;
+      color: var(--ticket-soft);
+      font-size: 0.86rem;
+    }
+
+    .ticket-row-value.heart::after {
+      content: " ❤";
+      color: #d03050;
+      margin-left: 4px;
+    }
+
+    .stub-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+      gap: 12px;
+    }
+
+    .stub-date-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ticket-soft);
+      text-align: center;
+    }
+
+    .stub-date-block span.date {
+      font-size: 0.9rem;
+      color: var(--ticket-text);
+      margin-top: 4px;
+      letter-spacing: 0.14em;
+      font-weight: 600;
+    }
+
+    .stub-hint {
+      font-size: 0.8rem;
+      color: var(--ticket-soft);
+      line-height: 1.4;
+    }
+
+    .stub-arrow {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+
+    .ticket-drag-zone {
+      position: absolute;
+      inset: 0;
+      cursor: grab;
+      touch-action: none;
+      background: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0) 0,
+        rgba(255, 255, 255, 0) 50%,
+        rgba(253, 199, 217, 0.16) 100%
+      );
+      border-radius: 18px;
+    }
+
+    .ticket-drag-zone:active {
+      cursor: grabbing;
+    }
+
+    .ticket-gone {
+      animation: ticketFade 0.55s ease forwards;
+      pointer-events: none;
+    }
+
+    @keyframes ticketFade {
+      to {
+        opacity: 0;
+        transform: translateY(40px) scale(0.97);
+      }
+    }
+
+    .bottom-caption {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 10px;
+      font-size: 0.72rem;
+      color: rgba(240, 236, 255, 0.78);
+      text-align: center;
+      pointer-events: none;
+      z-index: 3;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .bottom-caption.hide {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    @media (max-width: 600px) {
+      .ticket-main-part {
+        padding: 18px 18px 16px;
+      }
+      .ticket-title {
+        font-size: 1.55rem;
+      }
+      .ticket-subtitle {
+        font-size: 0.8rem;
+      }
+      .ticket-description {
+        font-size: 0.8rem;
+      }
+      .ticket-rows {
+        gap: 24px;
+        font-size: 0.8rem;
+      }
+      .stub-hint {
+        font-size: 0.75rem;
+      }
+      .bottom-caption {
+        font-size: 0.65rem;
+        bottom: 6px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .ticket-main-part {
+        padding: 14px 14px 12px;
+      }
+
+      .ticket-stub {
+        padding: 12px 10px 16px;
+      }
+
+      .ticket-title {
+        font-size: 1.4rem;
+      }
+
+      .ticket-subtitle,
+      .ticket-description {
+        font-size: 0.78rem;
+      }
+
+      .ticket-rows {
+        gap: 24px;
+        font-size: 0.78rem;
+      }
+
+      .stub-date-block {
+        font-size: 0.72rem;
+      }
+
+      .stub-date-block span.date {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <div class="cinema">
+    <div class="screen-wrapper">
+      <!-- PERDE -->
+      <div class="curtain" id="curtain">
+        <div class="curtain-panel left"></div>
+        <div class="curtain-panel right"></div>
+      </div>
+
+      <!-- FİLM EKRANI -->
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="screen-video" id="screen-video">
+            <video
+              id="love-film"
+              playsinline
+              webkit-playsinline
+              preload="metadata"
+              poster="poster.png"
+            >
+              <source src="film.mp4" type="video/mp4" />
+              Tarayıcın bu videoyu oynatamıyor :(
+            </video>
+          </div>
+
+          <!-- ÜSTTE FİLMİ BAŞLAT BUTONU -->
+          <div class="top-start" id="top-start">
+            <button class="top-start-btn">
+              <span class="icon">▶</span>
+              <span>Filmi Başlat</span>
+            </button>
+          </div>
+
+          <!-- BÜYÜK ORTA PLAY TUŞU (başta gizli) -->
+          <div class="cc-big-play hidden" id="big-play">
+            <button class="cc-big-play-btn">
+              <span>▶</span>
+            </button>
+          </div>
+
+          <!-- CUSTOM PLAYER BAR -->
+          <div class="custom-controls" id="custom-controls">
+            <button class="cc-btn" id="btn-play">
+              <span class="cc-icon" id="icon-play">▶</span>
+            </button>
+
+            <div class="cc-progress-wrap">
+              <div class="cc-progress-bg" id="cc-progress-bg">
+                <div class="cc-progress-bar" id="cc-progress"></div>
+              </div>
+            </div>
+
+            <div class="cc-right">
+              <span class="cc-time" id="cc-time">0:00 / 0:00</span>
+              <button class="cc-btn" id="btn-mute">
+                <span class="cc-icon" id="icon-mute">🔊</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- PAUSE OVERLAY (REKLAM ARASI) -->
+          <div class="pause-overlay" id="pause-overlay">
+            <div class="pause-card">
+              <div class="pause-title">REKLAM ARASI</div>
+              <p class="pause-text">
+                Sadece minicik bir ara. <br />
+                Devam etmek için buraya tıklayabilirsin. 💫
+              </p>
+            </div>
+          </div>
+
+          <!-- END OVERLAY (FİLM BİTTİ) -->
+          <div class="end-overlay" id="end-overlay">
+            <div class="end-card">
+              <div class="end-title">FİLM BİTTİ 🎬</div>
+              <p class="end-text">
+                Başrol: Sen<br />
+                En iyi yardımcı oyuncu: Ben<br />
+                Özel teşekkür: Marul’a 🥬
+              </p>
+              <div class="end-actions">
+                <button class="end-btn primary" id="btn-rewatch">
+                  Bir Daha İzle
+                </button>
+                <button class="end-btn ghost" id="btn-save-ticket">
+                  Bileti Sakla
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BİZ + KOLTUKLAR (SALON) -->
+      <div class="viewer-scene">
+        <img src="salon.png" alt="Cinema Pixel Scene" />
+      </div>
+
+      <!-- BİLET -->
+      <div class="ticket-layer" id="ticket-layer">
+        <div class="ticket-visual ticket-main-tilt" id="ticket-main">
+          <section class="ticket-main-part">
+            <div class="ticket-label-small">MANITA CINEMA</div>
+
+            <h1 class="ticket-title">
+              <span>Bir Marul Hikayesi</span>
+              <span class="leaf">🥬</span>
+            </h1>
+
+            <div class="ticket-subtitle">Bu yılın en romantik yapımı</div>
+
+            <hr class="ticket-divider" />
+
+            <p class="ticket-description">
+              Bu bileti kesince hayatlarımızın bir daha ayrılmamak üzere kesiştiği o anı izleyeceksin.
+              Hazırsan ışıklar kapansın ve perde açılsın.
+            </p>
+
+            <hr class="ticket-divider" />
+
+            <div class="ticket-rows">
+              <div>
+                <div class="ticket-row-label">Salon</div>
+                <div class="ticket-row-value">26 – Manita Deluxe</div>
+              </div>
+              <div>
+                <div class="ticket-row-label">Sıra</div>
+                <div class="ticket-row-value heart">Yan Yana</div>
+              </div>
+            </div>
+          </section>
+
+          <div class="ticket-stub-wrap" id="ticket-stub">
+            <div class="ticket-stub">
+              <div class="stub-inner">
+                <div class="stub-date-block">
+                  <span>TARİH</span>
+                  <span class="date">01.01.2026</span>
+                </div>
+                <div>
+                  <div class="stub-arrow">⬇️</div>
+                  <div class="stub-hint">
+                    Şuradan aşağı<br />çek yav...
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ticket-drag-zone" id="ticket-drag-zone"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-caption" id="bottom-caption">
+        Sağdaki küçük bileti <b>aşağı doğru çekip koparınca</b> perde açılıp film başlıyor.
+        Videoyu alttaki kontrol çubuğundan oynatıp durdurabilirsin. 🍿
+      </div>
+    </div>
+  </div>
+
+  <audio id="curtain-sound" src="curtain.mp3" preload="auto"></audio>
+
+  <script>
+    (function () {
+      const curtain = document.getElementById("curtain");
+      const ticketLayer = document.getElementById("ticket-layer");
+      const ticketStub = document.getElementById("ticket-stub");
+      const ticketMain = document.getElementById("ticket-main");
+      const dragZone = document.getElementById("ticket-drag-zone");
+      const bottomCaption = document.getElementById("bottom-caption");
+      const curtainSound = document.getElementById("curtain-sound");
+      const video = document.getElementById("love-film");
+      const screenInner = document.querySelector(".screen-inner");
+      const screenVideo = document.getElementById("screen-video");
+
+      const pauseOverlay = document.getElementById("pause-overlay");
+      const endOverlay = document.getElementById("end-overlay");
+      const btnRewatch = document.getElementById("btn-rewatch");
+      const btnSaveTicket = document.getElementById("btn-save-ticket");
+
+      const customControls = document.getElementById("custom-controls");
+      const bigPlay = document.getElementById("big-play");
+      const btnPlay = document.getElementById("btn-play");
+      const iconPlay = document.getElementById("icon-play");
+      const btnMute = document.getElementById("btn-mute");
+      const iconMute = document.getElementById("icon-mute");
+      const ccTime = document.getElementById("cc-time");
+      const ccProgressBg = document.getElementById("cc-progress-bg");
+      const ccProgress = document.getElementById("cc-progress");
+
+      const topStart = document.getElementById("top-start");
+
+      let dragging = false;
+      let startY = 0;
+      let currentY = 0;
+      let maxDrag = 0;
+      let opened = false;
+      let lightsDimmed = false;
+
+      const isTouchDevice =
+        "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+      let hideControlsTimeout = null;
+      let progressRaf = null;
+
+      // Film başladıktan sonra barın çalışması için flag
+      let controlsEnabled = false;
+
+      /* === YARDIMCI FONKSİYONLAR === */
+
+      function formatTime(sec) {
+        if (!isFinite(sec)) return "0:00";
+        sec = Math.floor(sec);
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        return m + ":" + (s < 10 ? "0" + s : s);
+      }
+
+      function updateTimeAndProgress() {
+        if (!video || !ccTime || !ccProgress) return;
+        const cur = video.currentTime || 0;
+        const dur = video.duration || 0;
+        ccTime.textContent = formatTime(cur) + " / " + formatTime(dur);
+        const pct = dur ? (cur / dur) * 100 : 0;
+        ccProgress.style.width = pct + "%";
+      }
+
+      function startProgressLoop() {
+        if (!video) return;
+        if (progressRaf) cancelAnimationFrame(progressRaf);
+
+        const loop = () => {
+          updateTimeAndProgress();
+          if (!video.paused && !video.ended) {
+            progressRaf = requestAnimationFrame(loop);
+          }
+        };
+        progressRaf = requestAnimationFrame(loop);
+      }
+
+      function stopProgressLoop() {
+        if (progressRaf) cancelAnimationFrame(progressRaf);
+        progressRaf = null;
+        updateTimeAndProgress();
+      }
+
+      function showControlsTemp() {
+        if (!customControls || !controlsEnabled) return;
+        customControls.classList.add("visible");
+        if (hideControlsTimeout) clearTimeout(hideControlsTimeout);
+
+        if (video && !video.paused && !isTouchDevice) {
+          hideControlsTimeout = setTimeout(() => {
+            customControls.classList.remove("visible");
+          }, 2000);
+        }
+      }
+
+      function setPlayIcon() {
+        if (!iconPlay) return;
+        iconPlay.textContent = video && !video.paused ? "⏸" : "▶";
+      }
+
+      function setMuteIcon() {
+        if (!iconMute || !video) return;
+        iconMute.textContent = video.muted || video.volume === 0 ? "🔇" : "🔊";
+      }
+
+      function hideTopStart() {
+        if (topStart && topStart.style.display !== "none") {
+          topStart.style.display = "none";
+        }
+      }
+
+      function openCurtains() {
+        if (opened) return;
+        opened = true;
+
+        curtain.classList.add("open");
+
+        if (bottomCaption) {
+          bottomCaption.classList.add("hide");
+        }
+
+        if (curtainSound && typeof curtainSound.play === "function") {
+          curtainSound.currentTime = 0;
+          curtainSound.play().catch(() => {});
+        }
+
+        // Perde açılınca üstte "Filmi Başlat" butonu gelsin
+        if (topStart) {
+          topStart.classList.add("show");
+        }
+      }
+
+      /* === CUSTOM PLAYER OLAYLARI === */
+
+      function playVideo() {
+        if (!video) return;
+        hideTopStart();
+        video.play().catch(() => {});
+      }
+
+      function pauseVideo() {
+        if (!video) return;
+        video.pause();
+      }
+
+      if (btnPlay) {
+        btnPlay.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (!video) return;
+          if (video.paused || video.ended) {
+            playVideo();
+          } else {
+            pauseVideo();
+          }
+        });
+      }
+
+      if (bigPlay) {
+        bigPlay.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (!video) return;
+          playVideo();
+        });
+      }
+
+      // Üstteki "Filmi Başlat" butonu
+      if (topStart) {
+        const topBtn = topStart.querySelector("button");
+        if (topBtn) {
+          topBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            playVideo();
+          });
+        }
+      }
+
+      if (btnMute && video) {
+        btnMute.addEventListener("click", (e) => {
+          e.stopPropagation();
+          video.muted = !video.muted;
+          setMuteIcon();
+        });
+      }
+
+      // Tıkla ile sarma (click)
+      if (ccProgressBg && video) {
+        ccProgressBg.addEventListener("click", (e) => {
+          if (!controlsEnabled) return;
+          e.stopPropagation();
+          const rect = ccProgressBg.getBoundingClientRect();
+          const ratio = (e.clientX - rect.left) / rect.width;
+          if (video.duration) {
+            video.currentTime = Math.max(0, Math.min(video.duration * ratio, video.duration));
+            updateTimeAndProgress();
+          }
+        });
+      }
+
+      // === PROGRESS BAR DRAG (SÜRÜKLEYEREK SARMA) ===
+      let isScrubbing = false;
+
+      function seekFromEvent(ev) {
+        if (!ccProgressBg || !video || !video.duration) return;
+
+        const rect = ccProgressBg.getBoundingClientRect();
+        const clientX =
+          ev.clientX ||
+          (ev.touches && ev.touches[0] && ev.touches[0].clientX) ||
+          rect.left;
+
+        let ratio = (clientX - rect.left) / rect.width;
+        if (ratio < 0) ratio = 0;
+        if (ratio > 1) ratio = 1;
+
+        video.currentTime = video.duration * ratio;
+        updateTimeAndProgress();
+      }
+
+      if (ccProgressBg && video) {
+        ccProgressBg.addEventListener(
+          "pointerdown",
+          (e) => {
+            if (!controlsEnabled) return;
+            e.preventDefault();
+            e.stopPropagation();
+            isScrubbing = true;
+            if (ccProgressBg.setPointerCapture && e.pointerId != null) {
+              ccProgressBg.setPointerCapture(e.pointerId);
+            }
+            seekFromEvent(e);
+          },
+          { passive: false }
+        );
+
+        ccProgressBg.addEventListener(
+          "pointermove",
+          (e) => {
+            if (!isScrubbing) return;
+            e.preventDefault();
+            seekFromEvent(e);
+          },
+          { passive: false }
+        );
+
+        function stopScrub(e) {
+          if (!isScrubbing) return;
+          isScrubbing = false;
+          if (ccProgressBg.releasePointerCapture && e.pointerId != null) {
+            try {
+              ccProgressBg.releasePointerCapture(e.pointerId);
+            } catch (_) {}
+          }
+        }
+
+        ccProgressBg.addEventListener("pointerup", stopScrub);
+        ccProgressBg.addEventListener("pointercancel", stopScrub);
+      }
+
+      // Kontrol barını tıklayınca video play/pause olmasın
+      if (customControls) {
+        customControls.addEventListener("click", (e) => e.stopPropagation());
+      }
+
+      // Video alanına tıklayınca play/pause
+      if (screenVideo) {
+        screenVideo.addEventListener("click", () => {
+          if (!video) return;
+          if (video.paused || video.ended) {
+            playVideo();
+          } else {
+            pauseVideo();
+          }
+        });
+      }
+
+      /* === ARROW TUŞLARIYLA 10 SANİYE SARMA === */
+      document.addEventListener("keydown", (e) => {
+        if (!video || !video.duration) return;
+
+        const target = e.target;
+        const tag = target && target.tagName;
+        const isTyping =
+          tag === "INPUT" || tag === "TEXTAREA" || (target && target.isContentEditable);
+
+        if (isTyping) return;
+
+        if (e.key === "ArrowRight") {
+          e.preventDefault();
+          video.currentTime = Math.min(video.currentTime + 10, video.duration);
+          updateTimeAndProgress();
+        } else if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          video.currentTime = Math.max(video.currentTime - 10, 0);
+          updateTimeAndProgress();
+        }
+      });
+
+      /* === MOUSE ÜZERİNDEYKEN PLAYER BARI === */
+
+      if (screenInner && customControls) {
+        screenInner.addEventListener("mousemove", () => {
+          showControlsTemp();
+        });
+
+        screenInner.addEventListener("mouseleave", () => {
+          if (hideControlsTimeout) clearTimeout(hideControlsTimeout);
+          if (video && !video.paused && controlsEnabled) {
+            customControls.classList.remove("visible");
+          }
+        });
+      }
+
+      /* === VIDEO OLAYLARI === */
+
+      if (video) {
+        video.addEventListener("loadedmetadata", () => {
+          updateTimeAndProgress();
+          setPlayIcon();
+          setMuteIcon();
+        });
+
+        video.addEventListener("play", () => {
+          // İlk kez play olduysa bar aktifleşsin
+          if (!controlsEnabled) {
+            controlsEnabled = true;
+            if (isTouchDevice && customControls) {
+              customControls.classList.add("visible");
+            }
+          }
+
+          if (pauseOverlay) pauseOverlay.classList.remove("show");
+          if (endOverlay) endOverlay.classList.remove("show");
+          if (bigPlay) bigPlay.classList.add("hidden");
+          if (!lightsDimmed) {
+            lightsDimmed = true;
+            setTimeout(() => {
+              document.body.classList.add("lights-dim");
+            }, 600);
+          }
+          setPlayIcon();
+          showControlsTemp();
+          startProgressLoop();
+        });
+
+        video.addEventListener("pause", () => {
+          if (video.ended) return;
+          if (pauseOverlay) pauseOverlay.classList.add("show");
+          if (customControls && controlsEnabled) customControls.classList.add("visible");
+          if (bigPlay) bigPlay.classList.remove("hidden");
+          setPlayIcon();
+          stopProgressLoop();
+        });
+
+        video.addEventListener("ended", () => {
+          if (pauseOverlay) pauseOverlay.classList.remove("show");
+          if (endOverlay) endOverlay.classList.add("show");
+          if (customControls && controlsEnabled) customControls.classList.add("visible");
+          if (bigPlay) bigPlay.classList.remove("hidden");
+          setPlayIcon();
+          stopProgressLoop();
+        });
+      }
+
+      /* REKLAM ARASI kartına tıklayınca devam etsin */
+      if (pauseOverlay && video) {
+        pauseOverlay.addEventListener("click", () => {
+          pauseOverlay.classList.remove("show");
+          if (video.paused && !video.ended) {
+            playVideo();
+          }
+        });
+      }
+
+      /* Bir Daha İzle */
+      if (btnRewatch && video) {
+        btnRewatch.addEventListener("click", () => {
+          if (endOverlay) endOverlay.classList.remove("show");
+          video.currentTime = 0;
+          playVideo();
+        });
+      }
+
+      /* Bileti Sakla – zorunlu indirme */
+      if (btnSaveTicket) {
+        btnSaveTicket.addEventListener("click", () => {
+          const link = document.createElement("a");
+          link.href = "bilet.png";
+          link.download = "bir-marul-hikayesi-bileti.png";
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        });
+      }
+
+      /* === BİLET DRAG === */
+
+      function onPointerDown(e) {
+        dragging = true;
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+        startY = clientY;
+        currentY = 0;
+
+        const rect = ticketStub.getBoundingClientRect();
+        maxDrag = rect.height * 0.5;
+
+        if (e.target.setPointerCapture && e.pointerId != null) {
+          e.target.setPointerCapture(e.pointerId);
+        }
+      }
+
+      function onPointerMove(e) {
+        if (!dragging) return;
+
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY) || startY;
+        let dy = clientY - startY;
+        if (dy < 0) dy = 0;
+        if (dy > maxDrag) dy = maxDrag;
+        currentY = dy;
+
+        const progress = dy / maxDrag;
+
+        ticketStub.style.transform = `translateY(${dy}px)`;
+        ticketMain.style.transform = `translateY(${progress * -6}px) skewY(${progress * -2.2}deg)`;
+      }
+
+      function detachTicket() {
+        ticketMain.classList.add("ticket-gone");
+        ticketLayer.style.pointerEvents = "none";
+        setTimeout(() => {
+          ticketLayer.style.display = "none";
+        }, 550);
+        openCurtains();
+      }
+
+      function resetTicket() {
+        ticketStub.style.transition = "transform 0.35s ease-out";
+        ticketMain.style.transition = "transform 0.35s ease-out";
+
+        ticketStub.style.transform = "translateY(0)";
+        ticketMain.style.transform = "none";
+
+        const clear = () => {
+          ticketStub.style.transition = "";
+          ticketMain.style.transition = "";
+          ticketStub.removeEventListener("transitionend", clear);
+        };
+        ticketStub.addEventListener("transitionend", clear);
+      }
+
+      function onPointerUp(e) {
+        if (!dragging) return;
+        dragging = false;
+
+        const threshold = maxDrag * 0.65;
+        if (currentY >= threshold) {
+          ticketStub.style.transition = "transform 0.25s ease-out";
+          ticketMain.style.transition = "transform 0.25s ease-out";
+          ticketStub.style.transform = `translateY(${maxDrag + 60}px)`;
+          ticketMain.style.transform = `translateY(-6px) skewY(-3deg)`;
+          setTimeout(detachTicket, 230);
+        } else {
+          resetTicket();
+        }
+
+        if (e.target.releasePointerCapture && e.pointerId != null) {
+          e.target.releasePointerCapture(e.pointerId);
+        }
+      }
+
+      dragZone.addEventListener("pointerdown", onPointerDown);
+      dragZone.addEventListener("pointermove", onPointerMove);
+      dragZone.addEventListener("pointerup", onPointerUp);
+      dragZone.addEventListener("pointercancel", onPointerUp);
+
+      dragZone.addEventListener(
+        "touchstart",
+        (e) => {
+          e.preventDefault();
+          onPointerDown(e);
+        },
+        { passive: false }
+      );
+
+      dragZone.addEventListener(
+        "touchmove",
+        (e) => {
+          e.preventDefault();
+          onPointerMove(e);
+        },
+        { passive: false }
+      );
+
+      dragZone.addEventListener(
+        "touchend",
+        (e) => {
+          e.preventDefault();
+          onPointerUp(e);
+        },
+        { passive: false }
+      );
+    })();
+  </script>
+</body>
+</html>
