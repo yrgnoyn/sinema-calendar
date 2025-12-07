@@ -56,11 +56,9 @@
     }
     
     /* PERDE AÇILINCA BU SINIF EKLENECEK */
-    body.dark-theme {
-        background-color: var(--bg-dark);
-    }
+    body.dark-theme,
     html.dark-theme {
-        background-color: var(--bg-dark);
+      background-color: var(--bg-dark) !important;
     }
 
     @supports (height: 100dvh) {
@@ -92,12 +90,12 @@
       box-shadow:
         0 0 40px rgba(0, 0, 0, 0.9),
         0 0 80px rgba(0, 0, 0, 0.95);
-        transition: background 1.2s ease;
+      transition: background 1.2s ease;
     }
 
     /* Koyu tema aktifken ekran arkası */
     body.dark-theme .screen-wrapper {
-        background: radial-gradient(circle at top, #2a2233 0, var(--bg-dark) 60%);
+      background: radial-gradient(circle at top, #2a2233 0, var(--bg-dark) 60%);
     }
 
     .screen-wrapper::before {
@@ -1089,6 +1087,11 @@
 
       let isFullscreen = false;
 
+      // Video'nun kendi kontrollerini kapat
+      if (video) {
+        video.controls = false;
+      }
+
       /* === YARDIMCI FONKSİYONLAR === */
 
       function formatTime(sec) {
@@ -1250,8 +1253,6 @@
           e.stopPropagation();
 
           // iOS'ta normal fullscreen yerine video'nun kendi fullscreen'i
-          const isIOS =
-            /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
           if (isIOS && video.webkitEnterFullscreen) {
             video.webkitEnterFullscreen();
             return;
@@ -1302,10 +1303,7 @@
         if (!ccProgressBg || !video || !video.duration) return;
 
         const rect = ccProgressBg.getBoundingClientRect();
-        const clientX =
-          ev.clientX ||
-          (ev.touches && ev.touches[0] && ev.touches[0].clientX) ||
-          rect.left;
+        const clientX = ev.clientX;
 
         let ratio = (clientX - rect.left) / rect.width;
         if (ratio < 0) ratio = 0;
@@ -1372,7 +1370,7 @@
         });
       }
 
-      /* === ARROW TUŞLARIYLA 10 SANİYE SARMA === */
+      /* === ARROW TUŞLARI VE SPACE İLE KONTROL === */
       document.addEventListener("keydown", (e) => {
         if (!video || !video.duration) return;
 
@@ -1391,6 +1389,13 @@
           e.preventDefault();
           video.currentTime = Math.max(video.currentTime - 10, 0);
           updateTimeAndProgress();
+        } else if (e.code === "Space") {
+          e.preventDefault();
+          if (video.paused || video.ended) {
+            playVideo();
+          } else {
+            pauseVideo();
+          }
         }
       });
 
@@ -1492,7 +1497,7 @@
 
       function onPointerDown(e) {
         dragging = true;
-        const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+        const clientY = e.clientY || 0;
         startY = clientY;
         currentY = 0;
 
@@ -1507,7 +1512,7 @@
       function onPointerMove(e) {
         if (!dragging) return;
 
-        const clientY = e.clientY || (e.touches && e.touches[0].clientY) || startY;
+        const clientY = e.clientY || startY;
         let dy = clientY - startY;
         if (dy < 0) dy = 0;
         if (dy > maxDrag) dy = maxDrag;
@@ -1526,11 +1531,22 @@
           ticketLayer.style.display = "none";
         }, 550);
         
-        // --- BURAYA EKLENDİ: PERDE AÇILINCA RENK DEĞİŞİMİ ---
+        // PERDE AÇILINCA RENK DEĞİŞİMİ – HER YERDEN KIRMIZIYI TEMİZLE
         document.body.classList.add('dark-theme');
-        document.documentElement.classList.add('dark-theme'); // html etiketine de ekle
-        document.getElementById('meta-theme-color').setAttribute('content', '#1a1621');
-        // ----------------------------------------------------
+        document.documentElement.classList.add('dark-theme');
+
+        // CSS değişkenini de güncelle
+        document.documentElement.style.setProperty('--bg', '#1a1621');
+
+        // Güvenlik için inline background'ları da koyulaştır
+        document.body.style.backgroundColor = '#1a1621';
+        document.documentElement.style.backgroundColor = '#1a1621';
+
+        // Tarayıcı üst bar rengi
+        const metaTheme = document.getElementById('meta-theme-color');
+        if (metaTheme) {
+          metaTheme.setAttribute('content', '#1a1621');
+        }
 
         openCurtains();
       }
@@ -1574,33 +1590,6 @@
       dragZone.addEventListener("pointermove", onPointerMove);
       dragZone.addEventListener("pointerup", onPointerUp);
       dragZone.addEventListener("pointercancel", onPointerUp);
-
-      dragZone.addEventListener(
-        "touchstart",
-        (e) => {
-          e.preventDefault();
-          onPointerDown(e);
-        },
-        { passive: false }
-      );
-
-      dragZone.addEventListener(
-        "touchmove",
-        (e) => {
-          e.preventDefault();
-          onPointerMove(e);
-        },
-        { passive: false }
-      );
-
-      dragZone.addEventListener(
-        "touchend",
-        (e) => {
-          e.preventDefault();
-          onPointerUp(e);
-        },
-        { passive: false }
-      );
     })();
   </script>
 </body>
