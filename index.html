@@ -5,7 +5,7 @@
   <title>Bir Marul Hikayesi 🥬 – Gala Gecesi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   
-  <meta id="meta-theme-color" name="theme-color" content="#8f0b1b">
+  <meta id="meta-theme-color" name="theme-color" content="#5a050f">
 
   <link
     href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Poppins:wght@300;400;500;600&display=swap"
@@ -14,7 +14,7 @@
 
   <style>
     :root {
-      --bg: #8f0b1b; 
+      --bg: #5a050f; 
       --bg-dark: #1a1621;
       
       --red: #b02030;
@@ -75,7 +75,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: radial-gradient(circle at top, #4a0e14 0%, var(--bg) 60%);
+      background: radial-gradient(circle at top, #3b050c 0%, var(--bg) 60%);
       box-shadow:
         0 0 40px rgba(0, 0, 0, 0.9),
         0 0 80px rgba(0, 0, 0, 0.95);
@@ -343,12 +343,31 @@
       image-rendering: pixelated;
       filter: brightness(1.08) contrast(1.02);
       transition: filter 0.8s ease;
-      pointer-events: auto; /* tıklanabilsin */
-      cursor: pointer;
+      pointer-events: none; /* Tıklamalar img üzerinden geçsin */
     }
 
     body.lights-dim .viewer-scene img {
       filter: brightness(0.48) contrast(1.18);
+    }
+
+    /* SADECE KARAKTERLERİN ÜSTÜNDE TIKLANABİLEN ALAN */
+    .kiss-hotspot {
+      position: absolute;
+      bottom: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 22%;
+      height: 45%;
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .kiss-hotspot:focus {
+      outline: none;
     }
 
     .pause-overlay,
@@ -857,6 +876,13 @@
         font-size: 0.8rem;
       }
     }
+
+    /* Bilet sürüklerken yazı seçilmesin */
+    .ticket-layer,
+    .ticket-layer * {
+      user-select: none;
+      -webkit-user-select: none;
+    }
   </style>
 </head>
 <body>
@@ -944,8 +970,13 @@
         </div>
       </div>
 
-      <!-- BURASI: ALTTAKİ SALON GÖRSELİ -->
+      <!-- ALTTAKİ SALON GÖRSELİ & KİSS HOTSPOT -->
       <div class="viewer-scene">
+        <button
+          class="kiss-hotspot"
+          id="kiss-hotspot"
+          aria-label="Öpüşme sahnesi"
+        ></button>
         <img
           id="viewer-scene-img"
           src="salon.png"
@@ -1047,22 +1078,21 @@
 
       const topStart = document.getElementById("top-start");
 
-      // ALT SALON GÖRSELİ (ÖPÜŞME EFEKTİ)
+      // ALT SALON GÖRSELİ (ÖPÜŞME EFEKTİ – SADECE KARAKTERLERİN ÜSTÜNDEKİ ALAN TIKLANABİLİR)
       const viewerImg = document.getElementById("viewer-scene-img");
+      const kissHotspot = document.getElementById("kiss-hotspot");
       const NORMAL_SRC = "salon.png";        // normal hali
       const KISS_SRC = "salon-kiss.png";     // öpüşme görseli (uzun ince olan)
       let kissTimeout = null;
       let isKissShowing = false;
 
-      if (viewerImg) {
-        viewerImg.addEventListener("click", () => {
-          // zaten öpüşme gösteriliyorsa bir daha tetikleme
+      if (kissHotspot && viewerImg) {
+        kissHotspot.addEventListener("click", () => {
           if (isKissShowing) return;
 
           isKissShowing = true;
           viewerImg.src = KISS_SRC;
 
-          // Kaç saniye öpüşme görünsün? (ms cinsinden)
           const DISPLAY_MS = 2500; // 2.5 saniye
 
           kissTimeout = setTimeout(() => {
