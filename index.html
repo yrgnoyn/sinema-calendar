@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <title>Bir Marul Hikayesi 🥬 – Gala Gecesi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#05040a" />
+  
+  <meta id="meta-theme-color" name="theme-color" content="#8f0b1b">
 
   <link
     href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Poppins:wght@300;400;500;600&display=swap"
@@ -13,7 +14,11 @@
 
   <style>
     :root {
-      --bg: #05040a;
+      /* BAŞLANGIÇ ZEMİN RENGİ (PERDE KIRMIZISI) */
+      --bg: #8f0b1b; 
+      /* PERDE AÇILDIKTAN SONRAKİ KOYU RENK */
+      --bg-dark: #1a1621;
+      
       --red: #b02030;
       --ticket-bg: #fbf6ec;
       --ticket-border: #e4dbcf;
@@ -22,6 +27,7 @@
       --cc-bg: rgba(7, 5, 14, 0.88);
       --cc-accent: #f5b36b;
       --cc-accent-soft: #f07171;
+      color-scheme: dark;
     }
 
     * {
@@ -30,18 +36,29 @@
       padding: 0;
     }
 
-    html,
-    body {
+    html {
       width: 100%;
       height: 100%;
-      background:
-        radial-gradient(circle at top, #302744 0, #120f20 55%, #040208 100%);
+      background-color: var(--bg); /* Başlangıçta kırmızı */
       overflow: hidden;
+      transition: background-color 1.2s ease; /* Yumuşak geçiş */
     }
 
     body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg); /* Başlangıçta kırmızı */
       font-family: "Poppins", sans-serif;
       color: #f5f1ff;
+      overflow: hidden;
+      margin: 0;
+      transition: background-color 1.2s ease; /* Yumuşak geçiş */
+    }
+    
+    /* PERDE AÇILINCA BU SINIF EKLENECEK */
+    body.dark-theme,
+    html.dark-theme {
+      background-color: var(--bg-dark) !important;
     }
 
     @supports (height: 100dvh) {
@@ -51,19 +68,7 @@
     }
 
     .bg-glow {
-      position: fixed;
-      inset: -20%;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 15% 0%, rgba(255, 240, 210, 0.38), transparent 60%),
-        radial-gradient(circle at 85% 0%, rgba(230, 200, 255, 0.4), transparent 60%),
-        radial-gradient(circle at 50% 100%, rgba(255, 150, 150, 0.45), transparent 55%);
-      z-index: 0;
-      transition: opacity 0.8s ease;
-    }
-
-    body.lights-dim .bg-glow {
-      opacity: 0.06;
+      display: none; 
     }
 
     .cinema {
@@ -80,10 +85,17 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: radial-gradient(circle at top, #4b2b3a 0, #191727 55%);
+      /* Başlangıçta kırmızımsı bir degrade, sonra koyulaşacak */
+      background: radial-gradient(circle at top, #4a0e14 0%, var(--bg) 60%);
       box-shadow:
         0 0 40px rgba(0, 0, 0, 0.9),
         0 0 80px rgba(0, 0, 0, 0.95);
+      transition: background 1.2s ease;
+    }
+
+    /* Koyu tema aktifken ekran arkası */
+    body.dark-theme .screen-wrapper {
+      background: radial-gradient(circle at top, #2a2233 0, var(--bg-dark) 60%);
     }
 
     .screen-wrapper::before {
@@ -116,8 +128,9 @@
     @media (max-width: 768px) {
       .screen {
         padding: 14px;
-        padding-bottom: 120px;
-        align-items: flex-end;
+        padding-top: 40px;
+        padding-bottom: 80px;
+        align-items: center;
       }
     }
 
@@ -160,7 +173,7 @@
     .screen-video {
       position: absolute;
       inset: 0;
-      background: #000; /* poster işini artık video üstleniyor */
+      background: #000;
       border-radius: inherit;
       overflow: hidden;
       z-index: 1;
@@ -246,7 +259,7 @@
       pointer-events: none;
       transition: opacity 0.25s ease, transform 0.25s ease;
       transform: translateY(6px);
-      z-index: 6; /* overlay'den yukarıda */
+      z-index: 6;
     }
 
     .custom-controls.visible {
@@ -325,58 +338,6 @@
       white-space: nowrap;
     }
 
-    .cc-big-play {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    .cc-big-play-btn {
-      width: 64px;
-      height: 64px;
-      border-radius: 999px;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      background: radial-gradient(circle at 30% 20%, #fffbe7, #f5b36b);
-      box-shadow:
-        0 20px 40px rgba(0,0,0,0.85),
-        0 0 0 1px rgba(255,255,255,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.2s ease;
-    }
-
-    .cc-big-play-btn:hover {
-      transform: scale(1.06) translateY(-1px);
-      box-shadow:
-        0 26px 55px rgba(0,0,0,0.9),
-        0 0 0 1px rgba(255,255,255,0.45);
-    }
-
-    .cc-big-play-btn:active {
-      transform: scale(0.97);
-      box-shadow:
-        0 14px 26px rgba(0,0,0,0.85),
-        0 0 0 1px rgba(255,255,255,0.3);
-    }
-
-    .cc-big-play-btn span {
-      margin-left: 3px;
-      font-size: 1.8rem;
-      color: #271010;
-    }
-
-    .cc-big-play.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
     .viewer-scene {
       position: fixed;
       bottom: 0;
@@ -388,6 +349,12 @@
       display: flex;
       justify-content: center;
       align-items: flex-end;
+    }
+
+    @media (max-width: 768px) {
+      .viewer-scene {
+        transform: translateX(-50%) translateY(12px);
+      }
     }
 
     .viewer-scene img {
@@ -922,13 +889,11 @@
 
   <div class="cinema">
     <div class="screen-wrapper">
-      <!-- PERDE -->
       <div class="curtain" id="curtain">
         <div class="curtain-panel left"></div>
         <div class="curtain-panel right"></div>
       </div>
 
-      <!-- FİLM EKRANI -->
       <div class="screen">
         <div class="screen-inner">
           <div class="screen-video" id="screen-video">
@@ -944,7 +909,6 @@
             </video>
           </div>
 
-          <!-- ÜSTTE FİLMİ BAŞLAT BUTONU -->
           <div class="top-start" id="top-start">
             <button class="top-start-btn">
               <span class="icon">▶</span>
@@ -952,14 +916,6 @@
             </button>
           </div>
 
-          <!-- BÜYÜK ORTA PLAY TUŞU (başta gizli) -->
-          <div class="cc-big-play hidden" id="big-play">
-            <button class="cc-big-play-btn">
-              <span>▶</span>
-            </button>
-          </div>
-
-          <!-- CUSTOM PLAYER BAR -->
           <div class="custom-controls" id="custom-controls">
             <button class="cc-btn" id="btn-play">
               <span class="cc-icon" id="icon-play">▶</span>
@@ -973,13 +929,15 @@
 
             <div class="cc-right">
               <span class="cc-time" id="cc-time">0:00 / 0:00</span>
+              <button class="cc-btn" id="btn-fullscreen">
+                <span class="cc-icon" id="icon-fullscreen">⛶</span>
+              </button>
               <button class="cc-btn" id="btn-mute">
                 <span class="cc-icon" id="icon-mute">🔊</span>
               </button>
             </div>
           </div>
 
-          <!-- PAUSE OVERLAY (REKLAM ARASI) -->
           <div class="pause-overlay" id="pause-overlay">
             <div class="pause-card">
               <div class="pause-title">REKLAM ARASI</div>
@@ -990,7 +948,6 @@
             </div>
           </div>
 
-          <!-- END OVERLAY (FİLM BİTTİ) -->
           <div class="end-overlay" id="end-overlay">
             <div class="end-card">
               <div class="end-title">FİLM BİTTİ 🎬</div>
@@ -1012,12 +969,10 @@
         </div>
       </div>
 
-      <!-- BİZ + KOLTUKLAR (SALON) -->
       <div class="viewer-scene">
         <img src="salon.png" alt="Cinema Pixel Scene" />
       </div>
 
-      <!-- BİLET -->
       <div class="ticket-layer" id="ticket-layer">
         <div class="ticket-visual ticket-main-tilt" id="ticket-main">
           <section class="ticket-main-part">
@@ -1099,7 +1054,6 @@
       const btnSaveTicket = document.getElementById("btn-save-ticket");
 
       const customControls = document.getElementById("custom-controls");
-      const bigPlay = document.getElementById("big-play");
       const btnPlay = document.getElementById("btn-play");
       const iconPlay = document.getElementById("icon-play");
       const btnMute = document.getElementById("btn-mute");
@@ -1107,6 +1061,9 @@
       const ccTime = document.getElementById("cc-time");
       const ccProgressBg = document.getElementById("cc-progress-bg");
       const ccProgress = document.getElementById("cc-progress");
+
+      const btnFullscreen = document.getElementById("btn-fullscreen");
+      const iconFullscreen = document.getElementById("icon-fullscreen");
 
       const topStart = document.getElementById("top-start");
 
@@ -1119,11 +1076,21 @@
 
       const isTouchDevice =
         "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+      const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
       let hideControlsTimeout = null;
       let progressRaf = null;
 
       // Film başladıktan sonra barın çalışması için flag
       let controlsEnabled = false;
+
+      let isFullscreen = false;
+
+      // Video'nun kendi kontrollerini kapat
+      if (video) {
+        video.controls = false;
+      }
 
       /* === YARDIMCI FONKSİYONLAR === */
 
@@ -1185,6 +1152,11 @@
         iconMute.textContent = video.muted || video.volume === 0 ? "🔇" : "🔊";
       }
 
+      function setFullscreenIcon() {
+        if (!iconFullscreen) return;
+        iconFullscreen.textContent = isFullscreen ? "🡼" : "⛶";
+      }
+
       function hideTopStart() {
         if (topStart && topStart.style.display !== "none") {
           topStart.style.display = "none";
@@ -1206,9 +1178,29 @@
           curtainSound.play().catch(() => {});
         }
 
-        // Perde açılınca üstte "Filmi Başlat" butonu gelsin
         if (topStart) {
           topStart.classList.add("show");
+        }
+      }
+
+      function openFullscreen(el) {
+        if (!el) return;
+        if (el.requestFullscreen) {
+          el.requestFullscreen();
+        } else if (el.webkitRequestFullscreen) {
+          el.webkitRequestFullscreen();
+        } else if (el.msRequestFullscreen) {
+          el.msRequestFullscreen();
+        }
+      }
+
+      function exitFullscreen() {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
         }
       }
 
@@ -1237,14 +1229,6 @@
         });
       }
 
-      if (bigPlay) {
-        bigPlay.addEventListener("click", (e) => {
-          e.stopPropagation();
-          if (!video) return;
-          playVideo();
-        });
-      }
-
       // Üstteki "Filmi Başlat" butonu
       if (topStart) {
         const topBtn = topStart.querySelector("button");
@@ -1263,6 +1247,40 @@
           setMuteIcon();
         });
       }
+
+      if (btnFullscreen && screenInner && video) {
+        btnFullscreen.addEventListener("click", (e) => {
+          e.stopPropagation();
+
+          // iOS'ta normal fullscreen yerine video'nun kendi fullscreen'i
+          if (isIOS && video.webkitEnterFullscreen) {
+            video.webkitEnterFullscreen();
+            return;
+          }
+
+          const isCurrentlyFullscreen =
+            document.fullscreenElement === screenInner ||
+            document.webkitFullscreenElement === screenInner;
+
+          if (isCurrentlyFullscreen) {
+            exitFullscreen();
+          } else {
+            openFullscreen(screenInner);
+          }
+        });
+
+        document.addEventListener("fullscreenchange", () => {
+          isFullscreen = !!document.fullscreenElement;
+          setFullscreenIcon();
+        });
+
+        document.addEventListener("webkitfullscreenchange", () => {
+          isFullscreen = !!document.webkitFullscreenElement;
+          setFullscreenIcon();
+        });
+      }
+
+      setFullscreenIcon();
 
       // Tıkla ile sarma (click)
       if (ccProgressBg && video) {
@@ -1285,10 +1303,7 @@
         if (!ccProgressBg || !video || !video.duration) return;
 
         const rect = ccProgressBg.getBoundingClientRect();
-        const clientX =
-          ev.clientX ||
-          (ev.touches && ev.touches[0] && ev.touches[0].clientX) ||
-          rect.left;
+        const clientX = ev.clientX;
 
         let ratio = (clientX - rect.left) / rect.width;
         if (ratio < 0) ratio = 0;
@@ -1355,7 +1370,7 @@
         });
       }
 
-      /* === ARROW TUŞLARIYLA 10 SANİYE SARMA === */
+      /* === ARROW TUŞLARI VE SPACE İLE KONTROL === */
       document.addEventListener("keydown", (e) => {
         if (!video || !video.duration) return;
 
@@ -1374,6 +1389,13 @@
           e.preventDefault();
           video.currentTime = Math.max(video.currentTime - 10, 0);
           updateTimeAndProgress();
+        } else if (e.code === "Space") {
+          e.preventDefault();
+          if (video.paused || video.ended) {
+            playVideo();
+          } else {
+            pauseVideo();
+          }
         }
       });
 
@@ -1399,10 +1421,10 @@
           updateTimeAndProgress();
           setPlayIcon();
           setMuteIcon();
+          controlsEnabled = true;
         });
 
         video.addEventListener("play", () => {
-          // İlk kez play olduysa bar aktifleşsin
           if (!controlsEnabled) {
             controlsEnabled = true;
             if (isTouchDevice && customControls) {
@@ -1412,7 +1434,6 @@
 
           if (pauseOverlay) pauseOverlay.classList.remove("show");
           if (endOverlay) endOverlay.classList.remove("show");
-          if (bigPlay) bigPlay.classList.add("hidden");
           if (!lightsDimmed) {
             lightsDimmed = true;
             setTimeout(() => {
@@ -1428,7 +1449,6 @@
           if (video.ended) return;
           if (pauseOverlay) pauseOverlay.classList.add("show");
           if (customControls && controlsEnabled) customControls.classList.add("visible");
-          if (bigPlay) bigPlay.classList.remove("hidden");
           setPlayIcon();
           stopProgressLoop();
         });
@@ -1437,7 +1457,6 @@
           if (pauseOverlay) pauseOverlay.classList.remove("show");
           if (endOverlay) endOverlay.classList.add("show");
           if (customControls && controlsEnabled) customControls.classList.add("visible");
-          if (bigPlay) bigPlay.classList.remove("hidden");
           setPlayIcon();
           stopProgressLoop();
         });
@@ -1478,7 +1497,7 @@
 
       function onPointerDown(e) {
         dragging = true;
-        const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+        const clientY = e.clientY || 0;
         startY = clientY;
         currentY = 0;
 
@@ -1493,7 +1512,7 @@
       function onPointerMove(e) {
         if (!dragging) return;
 
-        const clientY = e.clientY || (e.touches && e.touches[0].clientY) || startY;
+        const clientY = e.clientY || startY;
         let dy = clientY - startY;
         if (dy < 0) dy = 0;
         if (dy > maxDrag) dy = maxDrag;
@@ -1511,6 +1530,24 @@
         setTimeout(() => {
           ticketLayer.style.display = "none";
         }, 550);
+        
+        // PERDE AÇILINCA RENK DEĞİŞİMİ – HER YERDEN KIRMIZIYI TEMİZLE
+        document.body.classList.add('dark-theme');
+        document.documentElement.classList.add('dark-theme');
+
+        // CSS değişkenini de güncelle
+        document.documentElement.style.setProperty('--bg', '#1a1621');
+
+        // Güvenlik için inline background'ları da koyulaştır
+        document.body.style.backgroundColor = '#1a1621';
+        document.documentElement.style.backgroundColor = '#1a1621';
+
+        // Tarayıcı üst bar rengi
+        const metaTheme = document.getElementById('meta-theme-color');
+        if (metaTheme) {
+          metaTheme.setAttribute('content', '#1a1621');
+        }
+
         openCurtains();
       }
 
@@ -1553,33 +1590,6 @@
       dragZone.addEventListener("pointermove", onPointerMove);
       dragZone.addEventListener("pointerup", onPointerUp);
       dragZone.addEventListener("pointercancel", onPointerUp);
-
-      dragZone.addEventListener(
-        "touchstart",
-        (e) => {
-          e.preventDefault();
-          onPointerDown(e);
-        },
-        { passive: false }
-      );
-
-      dragZone.addEventListener(
-        "touchmove",
-        (e) => {
-          e.preventDefault();
-          onPointerMove(e);
-        },
-        { passive: false }
-      );
-
-      dragZone.addEventListener(
-        "touchend",
-        (e) => {
-          e.preventDefault();
-          onPointerUp(e);
-        },
-        { passive: false }
-      );
     })();
   </script>
 </body>
