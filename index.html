@@ -15,8 +15,8 @@
 
   <style>
     :root {
-      /* ANA ZEMİN RENGİ GÜNCELLENDİ */
-      --bg: #1a1621; 
+      /* Ana koyu renk */
+      --bg: #1a1621;
       --red: #b02030;
       --ticket-bg: #fbf6ec;
       --ticket-border: #e4dbcf;
@@ -34,19 +34,24 @@
       padding: 0;
     }
 
-    html,
-    body {
+    /* 2. Sayfanın en altı ve en üstünün beyaz kalmaması için html etiketine renk verdik */
+    html {
       width: 100%;
       height: 100%;
-      /* ESKİ PARLAK GRADIENT YERİNE DAHA KOYU VE DERİN BİR GEÇİŞ */
-      background: radial-gradient(circle at top, #241e2e 0%, #1a1621 40%, #05040a 100%);
-      background-color: var(--bg);
+      background-color: var(--bg); /* Tüm sayfa tabanını koyu yaptık */
       overflow: hidden;
     }
 
     body {
+      width: 100%;
+      height: 100%;
+      /* Body'nin kendi arka planını da aynı renk yaptık */
+      background-color: var(--bg);
+      background: #1a1621;
       font-family: "Poppins", sans-serif;
       color: #f5f1ff;
+      overflow: hidden;
+      margin: 0; /* Kenarlarda beyaz boşluk kalmaması için */
     }
 
     @supports (height: 100dvh) {
@@ -55,21 +60,9 @@
       }
     }
 
+    /* Beyazlık yapan ışık hüzmesini kapattım */
     .bg-glow {
-      position: fixed;
-      inset: -20%;
-      pointer-events: none;
-      /* IŞILTILARI BİRAZ KISTIM Kİ FAZLA AYDINLIK YAPMASIN */
-      background:
-        radial-gradient(circle at 15% 0%, rgba(255, 240, 210, 0.15), transparent 60%),
-        radial-gradient(circle at 85% 0%, rgba(230, 200, 255, 0.15), transparent 60%),
-        radial-gradient(circle at 50% 100%, rgba(255, 150, 150, 0.2), transparent 55%);
-      z-index: 0;
-      transition: opacity 0.8s ease;
-    }
-
-    body.lights-dim .bg-glow {
-      opacity: 0.06;
+      display: none; 
     }
 
     .cinema {
@@ -86,7 +79,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      /* EKRAN ARKASINI DA ANA TONLA UYUMLU HALE GETİRDİM */
+      /* Arka planla uyumlu koyu ton */
       background: radial-gradient(circle at top, #2a2233 0, #1a1621 60%);
       box-shadow:
         0 0 40px rgba(0, 0, 0, 0.9),
